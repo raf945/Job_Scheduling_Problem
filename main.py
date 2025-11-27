@@ -73,9 +73,6 @@ def scheduleMachines(loop):
     return total_runtime
 
 
-# Create the job permutations n times
-shuffle(jobs)
-
 # crossover function that creates a new generation from old
 # Gets the two highest performers + crossover
 def crossover(jobPermuations_param):
@@ -122,13 +119,8 @@ def crossover(jobPermuations_param):
     childBList = childB[0] + childB[1]
 
 
-    return childAList, childBList
+    return childAList, childBList, nextGeneration
 
-
-list1, list2 = crossover(jobPermutations)
-print(list1)
-
-print('')
 
 # Here we are finding the duplicate jobs in the children then adding what is missing
 def findDuplicates(childA):
@@ -151,7 +143,56 @@ def findDuplicates(childA):
     return jobValuesNoDuplicates
 
 
+# Getting the job contraints and machines back into a dictionary
+def getJobProcess(jobValues):
 
-print(findDuplicates(list1))
+    # Create list that will hold our job dictionaries 
+    childARepairedList = []
+
+    # y is the comparison job variable, so if it is the same as x,
+    # then we get the job dictionary with the value x and append it to childARepairedList
+    y = 0
+    z = 0
+
+    # Loop that will assign job variables to job values
+    for x in jobs:
+        print(z)
+        
+        # If y becomes biger than the length of job values we set it to 0 and make another run through the job dictionaries
+        if y > len(jobValues):
+            y = 0
+
+        # If the length of childARepairedList is bigger or equal to job values length, then that means we are done
+        elif len(childARepairedList) >= len(jobValues):
+            return childARepairedList
+
+        # If the job value in child job Values matches the job value in the job dictionary
+        # then we add that child job dictionary to our childARepairList
+        elif x['job'] == jobValues[y]:
+
+            childARepairedList.append(x)
+            y += 1
+        print(childARepairedList)
+
+        z += 1
+
+
+# Create the job permutations n times
+shuffle(jobs)
+
+# Get the two new unrepaired children and 2 parents from generation 1
+childAList, childBList, nextGeneration = crossover(jobPermutations)
+
+# Find and repair duplicates of childA
+childAJobValues = findDuplicates(childAList)
+
+print(childAJobValues)
+
+# Assign job constraints to job values in childAList
+print(getJobProcess(childAJobValues))
+
+
+#print(jobs)
+
 
 
