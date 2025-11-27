@@ -1,5 +1,6 @@
 import random
 import copy
+import math
 
 # Define jobs, machines, operators
 jobs = [
@@ -9,11 +10,10 @@ jobs = [
     {"job": "J4", "machine": "M1", "time": 40},
     {"job": "J5", "machine": "M3", "time": 45},
     {"job": "J6", "machine": "M1", "time": 65},
-
 ]
 
 machines = {"M1": 0, "M2": 20, "M3": 0}  # available from time 0
-operators = {"O1": 0, "O2": 0}           		# available from time 0
+operators = {"O1": 0}           		# available from time 0
 
 schedule = []
 
@@ -33,7 +33,7 @@ def shuffle(list_param):
 def scheduleMachines(loop):
 
     machines = {"M1": 0, "M2": 0, "M3": 0}  # available from time 0
-    operators = {"O1": 0, "O2": 0} 
+    operators = {"O1": 0} 
 
     for job in jobPermutations[loop]:
         machine = job["machine"]
@@ -77,24 +77,73 @@ def scheduleMachines(loop):
 shuffle(jobs)
 
 # crossover function that creates a new generation from old
-# Gets the two highest performers + crossover + mutate to create 4 more children
+# Gets the two highest performers + crossover
 def crossover(jobPermuations_param):
-    # Get the two highest performers add to next generation
+
     # Create a generation of run times
     generation = []
 
+    # Run the schedule algorithm on each job order and add to generation list
     for iteration in range(len(jobPermuations_param)):
         runtime = scheduleMachines(iteration)
         generation.append((runtime, jobPermuations_param[iteration]))
 
-    generation.sort(key=lambda x: x[0])  # sorts by runtime
+    # sorts by runtime
+    generation.sort(key=lambda x: x[0])
 
-    return generation
+    # Get the two highest performers add to next generation
+    nextGeneration = generation[:2]
+
+    # Store one runtime + job order
+    generation_firstParent = nextGeneration[0]
+    generation_secondParent = nextGeneration[1]
+
+    # Store ONLY job order
+    generation_firstParent_JobOrder = generation_firstParent[1]
+    generation_secondParent_JobOrder = generation_secondParent[1]
+    
+    # Define childA and childB, length of job order for crossover
+    childA = []
+    childB = []
+    jobOrderHalved = (math.floor(len(generation_firstParent[1])/2))
+
+    # Get first half of parent A and second half of parent B, breed child A
+    childA.append(generation_firstParent_JobOrder[:jobOrderHalved])
+    childA.append(generation_secondParent_JobOrder[jobOrderHalved:])
+
+    # Combine the two lists inside child A into childAList
+    childAList = childA[0] + childA[1]
+
+    # Get first half of parent B and second half of parent A, breed child B
+    childB.append(generation_secondParent_JobOrder[:jobOrderHalved])
+    childB.append(generation_firstParent_JobOrder[jobOrderHalved:])
+
+    # Combine the two lists inside child B into childBList
+    childBList = childB[0] + childB[1]
 
 
-print(crossover(jobPermutations))
-print(len(jobs))
+    return childAList, childBList
+
+
+list1, list2 = crossover(jobPermutations)
+
+
+# Here we are finding the duplicate jobs in the children and replacing the first occurance with whats missing
+def removeDuplicates(childA):
+    return childA[0]
+
+print(removeDuplicates(list1))
+
+
+#print((len(jobs)/2))
 
 
 
+    #Store first job order
+    #tempDictionary = generation_firstParent[1][1]
+
+    # Loop that moves every job order by 1 index, x is the next job order
+    #x = 1
+    #for jobOrder in generation_firstParent:
+    #    generation_firstParent[1][jobOrder] = generation_firstParent[1][x]
 
