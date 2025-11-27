@@ -130,17 +130,27 @@ print(list1)
 
 print('')
 
-# Here we are finding the duplicate jobs in the children
+# Here we are finding the duplicate jobs in the children then adding what is missing
 def findDuplicates(childA):
 
     # This is a list which just gets all the job values and puts them into a list
-    jobNumber = [j['job'] for j in childA]
-    # This is a list which will store what needs replacing and what doesnt
+    jobValues = [j['job'] for j in childA]
 
-    # This is a loop which will compare all the values together and find duplicates
-    for job in jobNumber:
-        if job
-    return jobNumber
+    # This is the default list of job values
+    jobRegularList = [j['job'] for j in jobs]
+
+    # Convert job values into dictionary to remove duplicates
+    jobValuesNoDuplicates = list(dict.fromkeys(jobValues))
+
+    # Get what is missing
+    exampleSet = set(jobRegularList) - set(jobValuesNoDuplicates)
+
+    # Add what is missing
+    jobValuesNoDuplicates+= exampleSet
+
+    return jobValuesNoDuplicates
+
+
 
 print(findDuplicates(list1))
 
