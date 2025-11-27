@@ -126,24 +126,22 @@ def crossover(jobPermuations_param):
 
 
 list1, list2 = crossover(jobPermutations)
+print(list1)
 
+print('')
 
-# Here we are finding the duplicate jobs in the children and replacing the first occurance with whats missing
-def removeDuplicates(childA):
-    return childA[0]
+# Here we are finding the duplicate jobs in the children
+def findDuplicates(childA):
 
-print(removeDuplicates(list1))
+    # This is a list which just gets all the job values and puts them into a list
+    jobNumber = [j['job'] for j in childA]
+    # This is a list which will store what needs replacing and what doesnt
 
+    # This is a loop which will compare all the values together and find duplicates
+    for job in jobNumber:
+        if job
+    return jobNumber
 
-#print((len(jobs)/2))
+print(findDuplicates(list1))
 
-
-
-    #Store first job order
-    #tempDictionary = generation_firstParent[1][1]
-
-    # Loop that moves every job order by 1 index, x is the next job order
-    #x = 1
-    #for jobOrder in generation_firstParent:
-    #    generation_firstParent[1][jobOrder] = generation_firstParent[1][x]
 
