@@ -144,37 +144,24 @@ def findDuplicates(childA):
 
 
 # Getting the job contraints and machines back into a dictionary
-def getJobProcess(jobValues):
+def getJobProcess(childJobValues, basicJobOrder):
+    # Create a lookup: job name -> full dict
+    job_lookup = {job['job']: job for job in basicJobOrder}
+    
+    # This is loop that looks through a job dictionary and assigned the child job value to the job order
+    result = []
+    for job_name in childJobValues:
+        if job_name in job_lookup:
+            result.append(job_lookup[job_name])
+        else:
+            raise ValueError(f"Job {job_name} not found in basic job order!")
+    
+    return result
 
-    # Create list that will hold our job dictionaries 
-    childARepairedList = []
 
-    # y is the comparison job variable, so if it is the same as x,
-    # then we get the job dictionary with the value x and append it to childARepairedList
-    y = 0
-    z = 0
+#def mutatePlusOne(child):
 
-    # Loop that will assign job variables to job values
-    for x in jobs:
-        print(z)
-        
-        # If y becomes biger than the length of job values we set it to 0 and make another run through the job dictionaries
-        if y > len(jobValues):
-            y = 0
 
-        # If the length of childARepairedList is bigger or equal to job values length, then that means we are done
-        elif len(childARepairedList) >= len(jobValues):
-            return childARepairedList
-
-        # If the job value in child job Values matches the job value in the job dictionary
-        # then we add that child job dictionary to our childARepairList
-        elif x['job'] == jobValues[y]:
-
-            childARepairedList.append(x)
-            y += 1
-        print(childARepairedList)
-
-        z += 1
 
 
 # Create the job permutations n times
@@ -185,11 +172,16 @@ childAList, childBList, nextGeneration = crossover(jobPermutations)
 
 # Find and repair duplicates of childA
 childAJobValues = findDuplicates(childAList)
-
-print(childAJobValues)
+childBJobValues = findDuplicates(childBList)
 
 # Assign job constraints to job values in childAList
-print(getJobProcess(childAJobValues))
+childAFixed = getJobProcess(childAJobValues, jobs)
+childBFixed = getJobProcess(childBJobValues, jobs)
+
+print(childBFixed)
+
+# Add children to next generation
+# print(addToNextGeneration(childAFixed, childBFixed, nextGeneration))
 
 
 #print(jobs)

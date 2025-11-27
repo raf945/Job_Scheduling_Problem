@@ -1,0 +1,22 @@
+    # Loop that will assign job variables to job values
+    for x in jobs:
+        print(len(childARepairedList))
+        print(x)
+
+        # If the length of childARepairedList is bigger or equal to job values length, then that means we are done
+        if len(childARepairedList) >= len(jobValues):
+            return childARepairedList
+
+        # If y becomes biger than the length of job values we set it to 0 and make another run through the job dictionaries
+        elif y > len(jobValues):
+            y = 0
+
+        # If the job value in child job Values matches the job value in the job dictionary
+        # then we add that child job dictionary to our childARepairList
+        elif x['job'] == jobValues[y]:
+
+            childARepairedList.append(x)
+            y += 1
+        print(childARepairedList)
+
+        z += 1
