@@ -176,7 +176,9 @@ def mutatePlusOne(child):
         mutatedChild.append(child[x])
         y+=1
         x+=1        
-    print(f'Mutated Child = {mutatedChild}')
+    #print(f'Mutated Child = {mutatedChild}')
+
+    return mutatedChild
 
 
 # Create the job permutations n times
@@ -195,7 +197,9 @@ childBFixed = getJobProcess(childBJobValues, jobs)
 
 print(childAFixed)
 
-mutatePlusOne(childAFixed)
+mutatedChild = mutatePlusOne(childAFixed)
+
+print(mutatedChild)
 
 
 
