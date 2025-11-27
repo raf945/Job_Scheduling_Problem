@@ -158,10 +158,25 @@ def getJobProcess(childJobValues, basicJobOrder):
     
     return result
 
+# Move every dictionary in child list to the right by +1
+def mutatePlusOne(child):
+    
+    # temporary stores for last variable to go in front
+    temp_lastJobStore = child[(len(child)-1)]
+    print(f'last job = {temp_lastJobStore}')
 
-#def mutatePlusOne(child):
+    #Mutated List
+    mutatedChild = [temp_lastJobStore]
 
+    x = 0 # Iteration count
+    y = 1 # Second dictionary in list
 
+    # Loop that adds
+    while y <= (len(child)-1):
+        mutatedChild.append(child[x])
+        y+=1
+        x+=1        
+    print(f'Mutated Child = {mutatedChild}')
 
 
 # Create the job permutations n times
@@ -178,13 +193,10 @@ childBJobValues = findDuplicates(childBList)
 childAFixed = getJobProcess(childAJobValues, jobs)
 childBFixed = getJobProcess(childBJobValues, jobs)
 
-print(childBFixed)
+print(childAFixed)
 
-# Add children to next generation
-# print(addToNextGeneration(childAFixed, childBFixed, nextGeneration))
+mutatePlusOne(childAFixed)
 
-
-#print(jobs)
 
 
 
