@@ -12,30 +12,33 @@ jobs = [
     {"job": "J6", "machine": "M1", "time": 65},
 ]
 
-machines = {"M1": 0, "M2": 20, "M3": 0}  # available from time 0
+machines = {"M1": 0, "M2": 0, "M3": 0}  # available from time 0
 operators = {"O1": 0}           		# available from time 0
 
 schedule = []
 
-# Shuffle jobs list and add to list
-
-jobPermutations = []
-
-def shuffle(list_param):
+# Function that copies jobs list and randomises them
+def shuffle(list_param, jobPermutations):
+    # Here we are adding the original job order to the jobPermutations list
     x = 0
+    originalJobOrder = copy.deepcopy(list_param)
+    jobPermutations.append(originalJobOrder)
+
+    # while loop so that the original job order is shuffled until 
     while x < len(list_param):
-        individual = copy.deepcopy(jobs)
+        individual = copy.deepcopy(list_param)
         random.shuffle(individual)
         jobPermutations.append(individual)
         x+=1
 
 # This will apply the schedule algorithm to one job permutation
-def scheduleMachines(loop):
+def scheduleMachines(loop, jobPermutations):
 
     machines = {"M1": 0, "M2": 0, "M3": 0}  # available from time 0
     operators = {"O1": 0} 
 
     for job in jobPermutations[loop]:
+        #print(jobPermutations)
         machine = job["machine"]
         
         # Find the operator that is available the earliest
@@ -82,7 +85,7 @@ def crossover(jobPermuations_param):
 
     # Run the schedule algorithm on each job order and add to generation list
     for iteration in range(len(jobPermuations_param)):
-        runtime = scheduleMachines(iteration)
+        runtime = scheduleMachines(iteration, jobPermuations_param)
         generation.append((runtime, jobPermuations_param[iteration]))
 
     # sorts by runtime
@@ -163,7 +166,6 @@ def mutatePlusOne(child):
     
     # temporary stores for last variable to go in front
     temp_lastJobStore = child[(len(child)-1)]
-    print(f'last job = {temp_lastJobStore}')
 
     #Mutated List
     mutatedChild = [temp_lastJobStore]
@@ -181,11 +183,30 @@ def mutatePlusOne(child):
     return mutatedChild
 
 
+# Write a function that reverses the order of the job dictionaries
+def mutateReverseOrder(listChild):
+    
+    reversed_copy = listChild[:]        # or listChild.copy()
+    reversed_copy.reverse()                     # now safe to modify
+    return reversed_copy
+
+
+# Schedule machines on children
+def addToNextGeneration(child, nextGen):
+    # Schedule machine on child, return runTime
+    #runTime = scheduleMachines(child)
+    return None
+
+
+# Random job list
+
+randomJobList = []
+
 # Create the job permutations n times
-shuffle(jobs)
+shuffle(jobs, randomJobList)
 
 # Get the two new unrepaired children and 2 parents from generation 1
-childAList, childBList, nextGeneration = crossover(jobPermutations)
+childAList, childBList, nextGeneration = crossover(randomJobList)
 
 # Find and repair duplicates of childA
 childAJobValues = findDuplicates(childAList)
@@ -195,12 +216,15 @@ childBJobValues = findDuplicates(childBList)
 childAFixed = getJobProcess(childAJobValues, jobs)
 childBFixed = getJobProcess(childBJobValues, jobs)
 
-print(childAFixed)
+# Mutate Child B, call it mutatedChildB - reverse order mutation
+mutatedChildB = mutateReverseOrder(childBFixed)
 
+# Mutate Child A, call it mutatedChild - plus 1 mutation
 mutatedChild = mutatePlusOne(childAFixed)
 
-print(mutatedChild)
-
+anotherJobList = [childAFixed]
+print(childAFixed)
+print(scheduleMachines((len(anotherJobList)-1), anotherJobList))
 
 
 
