@@ -25,7 +25,7 @@ def shuffle(list_param, jobPermutations):
     jobPermutations.append(originalJobOrder)
 
     # while loop so that the original job order is shuffled until 
-    while x < len(list_param):
+    while x < (len(list_param)-1):
         individual = copy.deepcopy(list_param)
         random.shuffle(individual)
         jobPermutations.append(individual)
@@ -33,6 +33,10 @@ def shuffle(list_param, jobPermutations):
 
 # This will apply the schedule algorithm to one job permutation - Returns a run time of the list of job orders
 def scheduleMachines(loop, jobPermutations):
+
+    # Temp fix
+    schedule.clear()
+
 
     machines = {"M1": 0, "M2": 0, "M3": 0}  # available from time 0
     operators = {"O1": 0} 
@@ -101,6 +105,13 @@ def crossover(jobPermuations_param):
     # Store ONLY job order
     generation_firstParent_JobOrder = generation_firstParent[1]
     generation_secondParent_JobOrder = generation_secondParent[1]
+
+    # Add two parent job orders for evolution
+
+    evolution = []
+
+    evolution.append(generation_firstParent_JobOrder)
+    evolution.append(generation_secondParent_JobOrder)
     
     # Define childA and childB, length of job order for crossover
     childA = []
@@ -122,7 +133,7 @@ def crossover(jobPermuations_param):
     childBList = childB[0] + childB[1]
 
 
-    return childAList, childBList, nextGeneration
+    return childAList, childBList, evolution
 
 
 # Here we are finding the duplicate jobs in the children then adding what is missing
@@ -193,40 +204,50 @@ def mutateReverseOrder(listChild):
 
 # Schedule machines on children
 def addToNextGeneration(childA, childB, childC, childD, nextGen):
-    # Schedule machine on child, return runTime
-    
+
+    # Create array that will hold next generation
     evolution = []
-    nextGenTest = []
 
     # Add 2 best performers to next generation and 4 children
-    nextGenTest.append(nextGen[0][1])
-    nextGenTest.append(nextGen[1][1])
-    nextGenTest.append(childA)
-    nextGenTest.append(childB)
-    nextGenTest.append(childC)
-    nextGenTest.append(childD)
-
-    # Schedule machine and crossover
-    evolution.append(crossover(nextGenTest))
+    evolution.append(nextGen[0])
+    evolution.append(nextGen[1])
+    evolution.append(childA)
+    evolution.append(childB)
+    evolution.append(childC)
+    evolution.append(childD)
     
-    
-    #nextGenTest.append(nextGen)
-    
-    return nextGenTest
+    return evolution
 
 # This will take the list of list output from addToNextGeneration and get the lowest run time
-def getLowestRunTime(jobPermutations, loop):
+def getLowestRunTime(evolution):
 
-    # list will store run times
-    runTimes = []
+    # Define x as the loop iterator, runTimes initialised to hold the run time
+    x = 0
 
-    # Loop that will run the schedule algorithm on each job permutation in the list of lists
-    for job in jobPermutations:
-        runTimes.append(scheduleMachines(loop, job))
+    # Job order list will hold all the job order + run time dictionaries
+    jobOrderList = []
 
-        print(f'Job Permutation: {job}')
-        print('\n')
-        print(f'Run time: {runTimes[job]}')
+    # While loop is used to loop because I find it easier
+    while x < len(evolution):
+
+        # Create a new dictionary everytime to assign job order and run time
+        # We also schedule the machines here as we only need the run time of the job order
+        jobOrderRunTimes = {"Job Order": evolution[x],
+                            'RunTime': scheduleMachines(x, evolution)
+                            }
+
+        # Add job order + runtimes to dictionary, increment x by one til we reach the end of the list of list job orders
+        jobOrderList.append(jobOrderRunTimes)
+        x+=1
+
+    # Sort the job order list of dictionaries by lowest to highest run time
+    lowestToHighestRunTime = sorted(jobOrderList, key=lambda x: x["RunTime"])
+
+    # Get the first index value of sorted job order list of dictionaries
+    lowestRunTime = lowestToHighestRunTime[0]['RunTime']
+
+    # Return single integer, lowest run time of evolution
+    return lowestRunTime 
 
 
 # Random job list
@@ -237,6 +258,8 @@ randomJobList = []
 shuffle(jobs, randomJobList)
 
 print(f'Random job list: {randomJobList}')
+
+print(f'Length of job list {len(randomJobList)}')
 
 #def geneticAlgorithm(iterations):
 
@@ -257,19 +280,14 @@ mutatedChildB = mutateReverseOrder(childBFixed)
 # Mutate Child A, call it mutatedChild - plus 1 mutation
 mutatedChildA = mutatePlusOne(childAFixed)
 
-print('test add generation')
+print('##############')
 
 # Get the job permutations of the evolved list
-evolutions = addToNextGeneration(childAFixed, childBFixed, mutatedChildA, mutatedChildB, nextGeneration)
+evolutionGen = addToNextGeneration(childAFixed, childBFixed, mutatedChildA, mutatedChildB, nextGeneration)
 
-print(evolutions)
-print('\n')
-print(randomJobList)
+# Get the lowest run time of job permutation from the evolved list
+print(getLowestRunTime(evolutionGen))
 
-# get the run time of the evolved job permutations
-
-# Find why am i getting an error here:
-getLowestRunTime(evolutions, 4)
 
 
 
