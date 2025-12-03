@@ -18,30 +18,36 @@ schedule = []
 # First we will create the job schedule list and shuffle jobs into it
 
 x = 0
-
-while x <= 1:
-    jobPermutations = []
+jobPermutations = []
     
-    # Shuffle jobs n times
-    shuffle(jobs, jobPermutations)
+# Shuffle jobs n times
+shuffle(jobs2, jobPermutations)
+
+while x <= 20:
+    print(f'Epoch: {x} Started ////////////////////////////////////////')
     
     # Get the two new unrepaired children and 2 parents from generation 1
-    childAList, childBList, nextGeneration = crossover(randomJobList)
+    childAList, childBList, nextGeneration = crossover(jobPermutations)
     
     # Find and repair duplicates of childA
-    childAJobValues = findDuplicates(childAList, jobs)
-    childBJobValues = findDuplicates(childBList, jobs)
+    childAJobValues = findDuplicates(childAList, jobs2)
+    childBJobValues = findDuplicates(childBList, jobs2)
     
     # Assign job constraints to job values in childAList
-    childAFixed = getJobProcess(childAJobValues, jobs)
-    childBFixed = getJobProcess(childBJobValues, jobs)
+    childAFixed = getJobProcess(childAJobValues, jobs2)
+    childBFixed = getJobProcess(childBJobValues, jobs2)
     
     # Mutate Child B, call it mutatedChildB - reverse order mutation
     mutatedChildB = mutateReverseOrder(childBFixed)
 
     # Mutate Child A, call it mutatedChild - plus 1 mutation
-    mutatedChild = mutatePlusOne(childAFixed)
+    mutatedChildA = mutatePlusOne(childAFixed)
     
-    
-    
+    # Get the job permutations of the evolved list
+    jobPermutations = addToNextGeneration(childAFixed, childBFixed, mutatedChildA, mutatedChildB, nextGeneration)
+
+    # Get the lowest run time of job permutation from the evolved list
+    print(getLowestRunTime(jobPermutations))
+
+    print(f'Epoch: {x} ended ////////////////////////////////////////')    
     x+=1

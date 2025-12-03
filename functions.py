@@ -1,6 +1,7 @@
 import random
 import copy
 import math
+# TURN THIS ALL INTO A CLASS!!!! - TO DO!
 
 # Define jobs, machines, operators
 jobs = [
@@ -249,7 +250,7 @@ def getLowestRunTime(evolution):
     # Return single integer, lowest run time of evolution
     return lowestRunTime 
 
-
+"""
 # Random job list
 
 randomJobList = []
@@ -288,6 +289,6 @@ evolutionGen = addToNextGeneration(childAFixed, childBFixed, mutatedChildA, muta
 # Get the lowest run time of job permutation from the evolved list
 print(getLowestRunTime(evolutionGen))
 
-
+"""
 
 
