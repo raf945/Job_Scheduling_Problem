@@ -23,6 +23,10 @@ class GeneticAlgorithm:
         self.parentA = []
         self.parentB = []
 
+        # Child A, child B
+        self.childA = []
+        self.childB = []
+
         # Define the job contraints
         self.schedule = []
         self.machines = {"M1": 0, "M2": 0, "M3": 0}  # available from time 0
@@ -112,6 +116,9 @@ class GeneticAlgorithm:
         self.parentA = (self.firstGeneration[0])
         self.parentB = (self.firstGeneration[1])
 
+    def printFirstGeneration(self):
+        return self.parentA, self.parentB
+
 
     # Write the crossover function
     def crossover(self):
@@ -126,9 +133,39 @@ class GeneticAlgorithm:
         parentAJobOrder = self.parentA[1]
         parentBJobOrder = self.parentB[1]
 
-        
+        # Get the length of job order for crossover
+        jobOrderHalved = (math.floor(len(parentAJobOrder)/2))
 
-        
+        print(f'job order length = {jobOrderHalved}')
+
+        # Get first half of parent A and second half of parent B for child A
+        tempHoldingForChildA = []
+        tempHoldingForChildA.append(parentAJobOrder[:jobOrderHalved])
+        tempHoldingForChildA.append(parentBJobOrder[jobOrderHalved:])
+
+        self.childA = tempHoldingForChildA[0] + tempHoldingForChildA[1]
+
+        # Get first half of parent B and second half of parent A for child A
+        tempHoldingForChildB = []
+        tempHoldingForChildB.append(parentBJobOrder[:jobOrderHalved])
+        tempHoldingForChildB.append(parentAJobOrder[jobOrderHalved:])
+
+        self.childB = tempHoldingForChildB[0] + tempHoldingForChildB[1]
+
+
+        print(f'Parent A DNA {self.parentA}')
+        print('\n')
+        print(f'Parent B DNA {self.parentB}')
+        print('\n')        
+        print(f'child B first half of DNA {tempHoldingForChildB[0]}')
+        print('\n')
+        print(f'child B second half of DNA {tempHoldingForChildB[1]}')
+        print('\n')    
+        print(f'child B DNA {self.childB}')
+
+    # Write the select two random jobs function
+
+    # Write the fill the pop size algorithm
 
     # Write the mutatePlusOne function
 

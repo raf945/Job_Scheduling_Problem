@@ -12,7 +12,7 @@ jobs2 = [
 
 
 # Create an instance of the GeneticAlgorithm class with jobs2 as our job order
-evolutionAlgo = GeneticAlgorithm(jobs2, 6, 3, 0.5, 0.9)
+evolutionAlgo = GeneticAlgorithm(jobs2, 50, 3, 0.5, 0.9)
 
 # Call the shuffle function to create a list of job lists each with a difference job order dictionary order
 evolutionAlgo.shuffle()
@@ -28,3 +28,5 @@ x = 0
 while x < 1:
     print(evolutionAlgo.crossover())
     x+=1
+
+#print(evolutionAlgo.printFirstGeneration())
