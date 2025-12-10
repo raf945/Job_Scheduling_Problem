@@ -17,6 +17,11 @@ class GeneticAlgorithm:
         # Initialise the job permutation list + firstGeneration
         self.jobPermutations = []
         self.firstGeneration =[]
+        self.nextGeneration = []
+
+        # Parent A, parent B
+        self.parentA = []
+        self.parentB = []
 
         # Define the job contraints
         self.schedule = []
@@ -38,12 +43,12 @@ class GeneticAlgorithm:
             self.jobPermutations.append(individual)
             x+=1
 
+    # Getter function to get the original job permutations list
     def getJobPerm(self):
         return f"size of the following list: {self.jobPermutations} is {len(self.jobPermutations)}"
 
     
     # This will apply the schedule algorithm to one job permutation - Returns a run time of the list of job orders
-
     def scheduleMachines(self, index=0):
 
         if index == self.pop_size:
@@ -98,8 +103,32 @@ class GeneticAlgorithm:
         return self.scheduleMachines(index + 1)
     
     # Write the function for sorting the job permutation tuple list by runtime and get the two best performers
+    def getParents(self):
+
+        # Sort all tuples in the list by the first element in the tuple which would be the runtime, therefore giving us the best performers
+        self.firstGeneration.sort(key=lambda y: y[0], reverse=False)
+
+        # Assigned parent A and B to the best performers in the first generation
+        self.parentA = (self.firstGeneration[0])
+        self.parentB = (self.firstGeneration[1])
+
 
     # Write the crossover function
+    def crossover(self):
+        x = random.random()
+
+        # First we will apply the crossover rate so that way we dont always crossover two parents to avoid a local minima
+        if x > self.crossover_rate:
+            return 'Crossover not applied'
+
+        # If x smaller than the crossover rate then we crossover the two parents
+        # Here we assigned the parents' job order dicts from the two tuples
+        parentAJobOrder = self.parentA[1]
+        parentBJobOrder = self.parentB[1]
+
+        
+
+        
 
     # Write the mutatePlusOne function
 
