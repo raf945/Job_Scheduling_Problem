@@ -1,4 +1,4 @@
-from functions import *
+from GeneticAlgorithm import GeneticAlgorithm
 
 # Define jobs, machines, operators
 jobs2 = [
@@ -7,47 +7,21 @@ jobs2 = [
     {"job": "J3", "machine": "M1", "time": 40},
     {"job": "J4", "machine": "M3", "time": 40},
     {"job": "J5", "machine": "M2", "time": 45},
-    {"job": "J6", "machine": "M1", "time": 35},
+    {"job": "J6", "machine": "M1", "time": 35},           
 ]
 
-machines = {"M1": 0, "M2": 0, "M3": 0}  # available from time 0
-operators = {"O1": 0}           		# available from time 0
 
-schedule = []
+# Create an instance of the GeneticAlgorithm class with jobs2 as our job order
+evolutionAlgo = GeneticAlgorithm(jobs2, 6, 3, 0.5, 0.9)
 
-# First we will create the job schedule list and shuffle jobs into it
+# Call the shuffle function to create a list of job lists each with a difference job order dictionary order
+evolutionAlgo.shuffle()
 
-x = 0
-jobPermutations = []
-    
-# Shuffle jobs n times
-shuffle(jobs2, jobPermutations)
 
-while x <= 20:
-    print(f'Epoch: {x} Started ////////////////////////////////////////')
-    
-    # Get the two new unrepaired children and 2 parents from generation 1
-    childAList, childBList, nextGeneration = crossover(jobPermutations)
-    
-    # Find and repair duplicates of childA
-    childAJobValues = findDuplicates(childAList, jobs2)
-    childBJobValues = findDuplicates(childBList, jobs2)
-    
-    # Assign job constraints to job values in childAList
-    childAFixed = getJobProcess(childAJobValues, jobs2)
-    childBFixed = getJobProcess(childBJobValues, jobs2)
-    
-    # Mutate Child B, call it mutatedChildB - reverse order mutation
-    mutatedChildB = mutateReverseOrder(childBFixed)
+print(evolutionAlgo.getJobPerm())
 
-    # Mutate Child A, call it mutatedChild - plus 1 mutation
-    mutatedChildA = mutatePlusOne(childAFixed)
-    
-    # Get the job permutations of the evolved list
-    jobPermutations = addToNextGeneration(childAFixed, childBFixed, mutatedChildA, mutatedChildB, nextGeneration)
+print('\n')
 
-    # Get the lowest run time of job permutation from the evolved list
-    print(getLowestRunTime(jobPermutations))
+print(evolutionAlgo.scheduleMachines())
 
-    print(f'Epoch: {x} ended ////////////////////////////////////////')    
-    x+=1
+
