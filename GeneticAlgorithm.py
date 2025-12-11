@@ -100,7 +100,8 @@ class GeneticAlgorithm:
         print(f"\nTotal runtime: {total_runtime} minutes")
 
         # Save total_runtime and job order to firstGeneration
-        self.firstGeneration.append((total_runtime, self.jobPermutations[index]))
+        self.firstGeneration.append((total_runtime, copy.deepcopy(self.jobPermutations[index])))
+
 
         # self.schedule.clear()
 
@@ -152,21 +153,65 @@ class GeneticAlgorithm:
 
         self.childB = tempHoldingForChildB[0] + tempHoldingForChildB[1]
 
+    # Finds duplicates in the job order and returns a list of strings with a unique jobs order
+    def findDuplicates(self):
 
-        print(f'Parent A DNA {self.parentA}')
-        print('\n')
-        print(f'Parent B DNA {self.parentB}')
-        print('\n')        
-        print(f'child B first half of DNA {tempHoldingForChildB[0]}')
-        print('\n')
-        print(f'child B second half of DNA {tempHoldingForChildB[1]}')
-        print('\n')    
-        print(f'child B DNA {self.childB}')
+        # This is a list which just gets all the job values and puts them into a list
+        jobValues = [j['job'] for j in self.childA]
 
-    # Write the select two random jobs function
+        # This is the default list of job values
+        jobRegularList = [j['job'] for j in self.jobOrder]
+
+        # Assign none to duplicates
+        seen = set()
+        for i, job in enumerate(jobValues):
+            if job in seen:
+                jobValues[i] = None
+            else:
+                seen.add(job)
+
+
+        uniqueValues = jobValues.copy()
+
+        print(f'uniqueValues: {uniqueValues}')
+
+        # Get what is missing
+        missing = [j for j in jobRegularList if j not in uniqueValues]
+        print(f"Missing jobs: {missing}")
+
+        # Add what is missing
+        x=0
+        for index, job in enumerate(uniqueValues):
+            if job == None:
+                uniqueValues[index] = missing[x]
+                x+=1
+
+        print(f'This should be a fixed list: {uniqueValues}') 
+
+    def getChildren(self):
+        return self.childA
+
+    # Write the select two random jobs function - Write this after the repair function
+    def twoRandomJobs(self):
+
+        # Assign child list we want to mutate and create two random numbers that are not the same
+        holdingList = copy.deepcopy(self.childA)
+        jobOne = random.randrange(0,5)
+        jobTwo = random.randrange(0,5)
+
+        while jobOne == jobTwo:
+            jobTwo = random.randrange(0,5)
+            print('loop')
+
+        print( f'Child A DNA{self.childA}')
+        print( f'Copy of Child A DNA{holdingList}')
+        
 
     # Write the fill the pop size algorithm
 
     # Write the mutatePlusOne function
 
     # Write the reverseMutate function
+
+    def run():
+        

@@ -5,8 +5,8 @@ jobs2 = [
     {"job": "J1", "machine": "M1", "time": 20},
     {"job": "J2", "machine": "M2", "time": 15},
     {"job": "J3", "machine": "M1", "time": 10},
-    {"job": "J4", "machine": "M3", "time": 70},
-    {"job": "J5", "machine": "M2", "time": 35},
+    {"job": "J4", "machine": "M2", "time": 70},
+    {"job": "J5", "machine": "M3", "time": 35},
     {"job": "J6", "machine": "M1", "time": 35},           
 ]
 
@@ -24,9 +24,13 @@ evolutionAlgo.scheduleMachines()
 evolutionAlgo.getParents()
 
 # Apply the crossover function
-x = 0
-while x < 1:
-    print(evolutionAlgo.crossover())
-    x+=1
+print(evolutionAlgo.crossover())
 
-#print(evolutionAlgo.printFirstGeneration())
+print(evolutionAlgo.getChildren())
+
+print('\n')
+
+print(evolutionAlgo.findDuplicates())
+
+# Check if the random number gen is working
+# evolutionAlgo.twoRandomJobs()
