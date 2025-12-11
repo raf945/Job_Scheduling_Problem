@@ -154,10 +154,10 @@ class GeneticAlgorithm:
         self.childB = tempHoldingForChildB[0] + tempHoldingForChildB[1]
 
     # Finds duplicates in the job order and returns a list of strings with a unique jobs order
-    def findDuplicates(self):
+    def findDuplicates(self, child):
 
         # This is a list which just gets all the job values and puts them into a list
-        jobValues = [j['job'] for j in self.childA]
+        jobValues = [j['job'] for j in child]
 
         # This is the default list of job values
         jobRegularList = [j['job'] for j in self.jobOrder]
@@ -186,10 +186,28 @@ class GeneticAlgorithm:
                 uniqueValues[index] = missing[x]
                 x+=1
 
-        print(f'This should be a fixed list: {uniqueValues}') 
+        print(f'This should be a fixed list: {uniqueValues}')
+        # Create a lookup: job name -> full dict
+
+        job_lookup = {job['job']: job for job in self.jobOrder}
+        
+        # This is loop that looks through a job dictionary and assigned the child job value to the job order
+        result = []
+        for job_name in uniqueValues:
+            if job_name in job_lookup:
+                result.append(job_lookup[job_name])
+            else:
+                raise ValueError(f"Job {job_name} not found in basic job order!")
+
+        print(f'Final result of Child A: {result}')
+
+        child = result
+
 
     def getChildren(self):
-        return self.childA
+        print(f'childA:{self.childA}')
+        print('\n')
+        print(f'childB:{self.childB}')
 
     # Write the select two random jobs function - Write this after the repair function
     def twoRandomJobs(self):
@@ -207,11 +225,33 @@ class GeneticAlgorithm:
         print( f'Copy of Child A DNA{holdingList}')
         
 
+    # Right now findDuplicates, only repairs childA, repair childB and any other
     # Write the fill the pop size algorithm
 
     # Write the mutatePlusOne function
 
     # Write the reverseMutate function
 
-    def run():
-        
+    def run(self):
+        # Call the shuffle function to create a list of job lists each with a difference job order dictionary order
+        self.shuffle()
+
+        # Schedule machines and return list of tuples. Each tuple has a run time and its corresponding job order
+        self.scheduleMachines()
+
+        # Get the best two performers
+        self.getParents()
+
+        # Apply the crossover function
+        self.crossover()
+
+        self.getChildren()
+        print('\n')
+
+        # Repair DNA
+        self.findDuplicates(self.childA)
+        print('\n')
+
+        self.findDuplicates(self.childB)
+        # TODO  check if child A and Child B were repaired
+

@@ -14,23 +14,6 @@ jobs2 = [
 # Create an instance of the GeneticAlgorithm class with jobs2 as our job order
 evolutionAlgo = GeneticAlgorithm(jobs2, 50, 3, 0.5, 0.9)
 
-# Call the shuffle function to create a list of job lists each with a difference job order dictionary order
-evolutionAlgo.shuffle()
+# Run everything
+evolutionAlgo.run()
 
-# Schedule machines and return list of tuples. Each tuple has a run time and its corresponding job order
-evolutionAlgo.scheduleMachines()
-
-# Get the best two performers
-evolutionAlgo.getParents()
-
-# Apply the crossover function
-print(evolutionAlgo.crossover())
-
-print(evolutionAlgo.getChildren())
-
-print('\n')
-
-print(evolutionAlgo.findDuplicates())
-
-# Check if the random number gen is working
-# evolutionAlgo.twoRandomJobs()
