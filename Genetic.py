@@ -210,6 +210,21 @@ class Genetic:
         child = result
 
         return child
+    
+    # Add parents and children to next generation and fill rest up randomly
+    def addToNextGeneration(self):
+        self.nextGeneration.append(self.parentA[1])
+        self.nextGeneration.append(self.parentB[1])
+        self.nextGeneration.append(self.childA)
+        self.nextGeneration.append(self.childB)
+
+        # Loop that randomly selects a job order from the first generation
+        z = random.randrange(0, len(self.firstGeneration))
+
+        while len(self.nextGeneration) <= self.pop_size:
+            self.nextGeneration.append(self.firstGeneration[z])
+
+        return self.nextGeneration
 
     def run(self):
         # Call the shuffle function to create a list of job lists each with a difference job order dictionary order
@@ -225,8 +240,13 @@ class Genetic:
         self.crossover()
 
         # Repair DNA
-        print('Child A')
-        self.findDuplicates(self.childA)
-        print('\n')
-        print('Child B')
-        self.findDuplicates(self.childB)
+        self.childA = self.findDuplicates(self.childA)
+        self.childB = self.findDuplicates(self.childB)
+
+        # Add parents and children to next generation
+        # Get tuples out of firstGeneration, to fill pop size of next generation, then mutate, then evaluate, loop over 
+        print(self.firstGeneration[1])
+        #self.addToNextGeneration()
+        #print(self.nextGeneration)
+
+

@@ -12,7 +12,7 @@ jobs2 = [
 
 
 # Create an instance of the GeneticAlgorithm class with jobs2 as our job order
-evolutionAlgo = Genetic(jobs2, 5, 3, 0.5, 0.9)
+evolutionAlgo = Genetic(jobs2, 10, 3, 0.5, 0.9)
 
 evolutionAlgo.run()
 
