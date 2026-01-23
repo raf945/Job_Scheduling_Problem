@@ -211,19 +211,8 @@ class GeneticAlgorithm:
 
     # Write the select two random jobs function - Write this after the repair function
     def twoRandomJobs(self):
-
-        # Assign child list we want to mutate and create two random numbers that are not the same
-        holdingList = copy.deepcopy(self.childA)
-        jobOne = random.randrange(0,5)
-        jobTwo = random.randrange(0,5)
-
-        while jobOne == jobTwo:
-            jobTwo = random.randrange(0,5)
-            print('loop')
-
-        print( f'Child A DNA{self.childA}')
-        print( f'Copy of Child A DNA{holdingList}')
-        
+        jobOrder = self.nextGeneration[0][1]
+        print(jobOrder)        
 
     # Right now findDuplicates, only repairs childA, repair childB and any other
     # Write the fill the pop size algorithm

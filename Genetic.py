@@ -39,16 +39,17 @@ class Genetic:
         # Here we are adding the original job order to the jobPermutations list
         x = 0
         originalJobOrder = copy.deepcopy(self.jobOrder)
-        sortedOriginalJobOrder = sorted(originalJobOrder, key=lambda x: x['priority'])
-        self.jobPermutations.append(sortedOriginalJobOrder)
+        #sortedOriginalJobOrder = sorted(originalJobOrder, key=lambda x: x['priority'])
+        self.jobPermutations.append(originalJobOrder)
 
         # while loop so that the original job order is shuffled until 
         while x < self.pop_size-1:
             individual = copy.deepcopy(self.jobOrder)
-            random.shuffle(individual)
-            sortedIndividual = sorted(individual, key=lambda x: x['priority'])
+            #random.shuffle(individual)
+            #sortedIndividual = sorted(individual, key=lambda x: x['priority'])
+            self.jobPermutations.append(individual)
 
-            self.jobPermutations.append(sortedIndividual)
+            #self.jobPermutations.append(sortedIndividual)
             x+=1
 
     # Getter function to get the original job permutations list
@@ -61,13 +62,15 @@ class Genetic:
         if index == self.pop_size:
             return self.firstGeneration
         
+        sorted_jobs = sorted(self.jobPermutations[index], key=lambda x: x['priority'])
+        
         # Reset Assignment
         self.schedule =[]
         self.machines = {"M1": 0, "M2": 0, "M3": 0, "M4": 0, "M5": 0}
         self.operators = {"O1": 0, "O2": 0, "O3": 0}
         self.tools = {"T1": 0, "T2": 0, 'T3': 0}
 
-        for job in self.jobPermutations[index]:
+        for job in sorted_jobs:
             #print(f"THIS IS THE JOB WE LOOKING AT: {job}")
             #print('\n')
             machine = job["machine"]
@@ -108,7 +111,8 @@ class Genetic:
         print(f"\nTotal runtime: {total_runtime} minutes")
 
         # Save total_runtime and job order to firstGeneration
-        self.firstGeneration.append((total_runtime, copy.deepcopy(self.jobPermutations[index])))
+        #self.firstGeneration.append((total_runtime, copy.deepcopy(self.jobPermutations[index])))
+        self.firstGeneration.append((total_runtime, copy.deepcopy(sorted_jobs)))
 
         return self.scheduleJobs(index+1)
         
@@ -142,8 +146,6 @@ class Genetic:
 
         # Get the length of job order for crossover
         jobOrderHalved = (math.floor(len(parentAJobOrder)/2))
-
-        print(f'job order length = {jobOrderHalved}')
 
         # Get first half of parent A and second half of parent B for child A
         tempHoldingForChildA = []
@@ -219,34 +221,75 @@ class Genetic:
         self.nextGeneration.append(self.childB)
 
         # Loop that randomly selects a job order from the first generation
-        z = random.randrange(0, len(self.firstGeneration))
-
-        while len(self.nextGeneration) <= self.pop_size:
-            self.nextGeneration.append(self.firstGeneration[z])
+        while len(self.nextGeneration) < self.pop_size:
+            z = random.randrange(0, len(self.firstGeneration))
+            self.nextGeneration.append(self.firstGeneration[z][1])
 
         return self.nextGeneration
+    
+    # Mutate one individual
+    def twoRandomJobs(self, jobOrder):
+
+        x = random.random()
+        if x < self.mutation_rate:
+            i, j = random.sample(range(len(jobOrder)), 2)
+            jobOrder[i], jobOrder[j] = jobOrder[j], jobOrder[i]
+
+        return jobOrder
+    
+    # Apply mutation function to whole population
+    def mutateGeneration(self):
+        for i in range(len(self.nextGeneration)):
+            self.nextGeneration[i] = self.twoRandomJobs(self.nextGeneration[i])
+
+        # Sort job orders by priority again
+        for i in range(len(self.nextGeneration)):
+            self.nextGeneration[i] = sorted(self.nextGeneration[i], key=lambda x: x['priority'])
+
 
     def run(self):
+
+        completion = []
+
         # Call the shuffle function to create a list of job lists each with a difference job order dictionary order
         self.shuffle()
 
         # Schedule machines and return list of tuples. Each tuple has a run time and its corresponding job order
         self.scheduleJobs()
 
-        # Get the best two performers
-        self.getParents()
+        for generation in range(self.epoch):
+            print(f'-----Generation {self.epoch}--------')
+            # Get the best two performers
+            self.getParents()
 
-        # Apply the crossover function
-        self.crossover()
+            # Apply the crossover function
+            self.crossover()
 
-        # Repair DNA
-        self.childA = self.findDuplicates(self.childA)
-        self.childB = self.findDuplicates(self.childB)
+            # Repair DNA
+            self.childA = self.findDuplicates(self.childA)
+            self.childB = self.findDuplicates(self.childB)
 
-        # Add parents and children to next generation
-        # Get tuples out of firstGeneration, to fill pop size of next generation, then mutate, then evaluate, loop over 
-        print(self.firstGeneration[1])
-        #self.addToNextGeneration()
-        #print(self.nextGeneration)
+            # Add parents and children to next generation
+            self.addToNextGeneration()
+
+            # Apply mutation chance to whole of the nextGeneration
+            self.mutateGeneration()
+
+            self.jobPermutations = copy.deepcopy(self.nextGeneration)
+
+            self.firstGeneration = []
+            self.nextGeneration = []
+            self.scheduleJobs()
+
+            makespan = min(self.firstGeneration, key=lambda x: x[0])
+            print(f'Makespan is: {makespan[0]}')
+            completion.append(makespan[0])
+
+        print("")
+        print("-- Evolution Complete --")
+        print(f"Best makespan achieved: {min(completion)} minutes")
+        print(f"Improvement: {completion[0] - min(completion)} minutes")
+        
+
 
 
