@@ -137,7 +137,9 @@ class Genetic:
 
         # First we will apply the crossover rate so that way we dont always crossover two parents to avoid a local minima
         if x > self.crossover_rate:
-            return 'Crossover not applied'
+            self.childA = copy.deepcopy(self.parentA[1])
+            self.childB = copy.deepcopy(self.parentB[1])
+            #return 'Crossover not applied'
 
         # If x smaller than the crossover rate then we crossover the two parents
         # Here we assigned the parents' job order dicts from the two tuples
@@ -243,12 +245,11 @@ class Genetic:
             self.nextGeneration[i] = self.twoRandomJobs(self.nextGeneration[i])
 
         # Sort job orders by priority again
-        for i in range(len(self.nextGeneration)):
-            self.nextGeneration[i] = sorted(self.nextGeneration[i], key=lambda x: x['priority'])
+        #for i in range(len(self.nextGeneration)):
+        #    self.nextGeneration[i] = sorted(self.nextGeneration[i], key=lambda x: x['priority'])
 
 
     def run(self):
-
         completion = []
 
         # Call the shuffle function to create a list of job lists each with a difference job order dictionary order
@@ -257,7 +258,7 @@ class Genetic:
         # Schedule machines and return list of tuples. Each tuple has a run time and its corresponding job order
         self.scheduleJobs()
 
-        for generation in range(self.epoch):
+        for e in range(self.epoch):
             print(f'-----Generation {self.epoch}--------')
             # Get the best two performers
             self.getParents()
