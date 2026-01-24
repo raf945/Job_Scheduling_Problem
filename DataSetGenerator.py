@@ -85,3 +85,10 @@ for x in example.jobPermutations:
 
 example.validate()
     
+with open('output.csv', 'w', newline='') as csvfile:
+    writer = csv.DictWriter(csvfile, fieldnames=['job', 'machine', 'time', 'priority', 'tool'])
+
+    writer.writeheader()
+
+    for jobRow in example.jobPermutations:
+        writer.writerow(jobRow)

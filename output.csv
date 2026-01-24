@@ -1,0 +1,11 @@
+job,machine,time,priority,tool
+J1,M1,17,2,T1
+J2,M1,22,1,T2
+J3,M2,47,2,T3
+J4,M4,26,1,T1
+J5,M5,28,1,T2
+J6,M1,15,3,T3
+J7,M3,55,1,T1
+J8,M5,30,1,T2
+J9,M3,11,3,T3
+J10,M5,26,3,T1
