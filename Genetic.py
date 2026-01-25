@@ -14,6 +14,9 @@ class Genetic:
         self.mutation_rate = mutation_rate
         self.crossover_rate = crossover_rate
 
+        self.best_completion_time = float('inf')  # Not 0!
+        self.best_joborder = None  # Not 0!
+
         # Initialise the job permutation list + firstGeneration
         self.jobPermutations = []
         self.firstGeneration =[]
@@ -110,8 +113,16 @@ class Genetic:
         total_runtime = max([s["end"] for s in self.schedule])
         print(f"\nTotal runtime: {total_runtime} minutes")
 
+
+        # Track Best
+        if self.best_completion_time == 0:
+            self.best_completion_time = total_runtime
+
+        if  total_runtime < self.best_completion_time:
+            self.best_completion_time = total_runtime
+            self.best_joborders= copy.deepcopy(sorted_jobs)
+
         # Save total_runtime and job order to firstGeneration
-        #self.firstGeneration.append((total_runtime, copy.deepcopy(self.jobPermutations[index])))
         self.firstGeneration.append((total_runtime, copy.deepcopy(sorted_jobs)))
 
         return self.scheduleJobs(index+1)
@@ -121,6 +132,8 @@ class Genetic:
 
         # Sort all tuples in the list by the first element in the tuple which would be the runtime, therefore giving us the best performers
         self.firstGeneration.sort(key=lambda y: y[0], reverse=False)
+
+        self.bestPerformer = self.firstGeneration[0][1]
 
         # Assigned parent A and B to the best performers in the first generation
         self.parentA = (self.firstGeneration[0])
@@ -250,7 +263,7 @@ class Genetic:
 
 
     def run(self):
-        completion = []
+        self.completion = []
 
         # Call the shuffle function to create a list of job lists each with a difference job order dictionary order
         self.shuffle()
@@ -284,12 +297,20 @@ class Genetic:
 
             makespan = min(self.firstGeneration, key=lambda x: x[0])
             print(f'Makespan is: {makespan[0]}')
-            completion.append(makespan[0])
+            self.completion.append(makespan[0])
 
         print("")
         print("-- Evolution Complete --")
-        print(f"Best makespan achieved: {min(completion)} minutes")
-        print(f"Improvement: {completion[0] - min(completion)} minutes")
+        print(f"Best makespan achieved: {min(self.completion)} minutes")
+        print(f"Improvement: {self.completion[0] - min(self.completion)} minutes")
+
+    
+    def getCompletionTime(self):
+        return min(self.completion)
+    
+
+    def mostOptimisedOrder(self):
+        return self.best_joborders
         
 
 

@@ -1,9 +1,12 @@
 from Genetic import Genetic
-
+from Greedy import Greedy
+from DataSetGenerator import DataSetGenerator as DSG
 import csv
 
 jobs = []
 
+dataset = DSG(5, 3)
+dataset.runDataSet()
 # Read csv
 with open('output.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
@@ -12,16 +15,17 @@ with open('output.csv', newline='') as csvfile:
         row['priority'] = int(row['priority'])
         jobs.append(row)
 
-# Define jobs, machines, operators
-jobs2 = [
-    {"job": "J1", "machine": "M1", "time": 20, "priority": 3, "tool": 'T1'},        
-    {"job": "J2", "machine": "M2", "time": 30, "priority": 3, "tool": 'T1'},        
-    {"job": "J3", "machine": "M1", "time": 10, "priority": 2, "tool": 'T3'},
-]
-
-
 # Create an instance of the GeneticAlgorithm class with jobs2 as our job order
-evolutionAlgo = Genetic(jobs, 1000, 10, 1, 0.9)
-
+evolutionAlgo = Genetic(jobs, 10, 5, 0.5, 0.5)
 evolutionAlgo.run()
+
+# Create an instance of the greedy algorithm as baseline
+test = Greedy(jobs)
+test.run()
+print(f'Greedy Baseline: {test.getCompletionTime()}')
+print(f'Genetic Algorithm: {evolutionAlgo.getCompletionTime()}')
+print('')
+print(f'Greedy job order: {test.getJobOrders()}')
+print('')
+print(f'Best Job order of Genetic Algorithm: {evolutionAlgo.mostOptimisedOrder()}')
 

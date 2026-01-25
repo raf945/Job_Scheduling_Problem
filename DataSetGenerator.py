@@ -9,9 +9,9 @@ random.seed(1)
 
 class DataSetGenerator():
 
-    def __init__(self, jobsNumber):
+    def __init__(self, jobsNumber, seed):
         self.jobsNumber = jobsNumber
-        
+        random.seed(seed)
         self.jobCounter = 0
 
         self.machineRandom = ""
@@ -40,8 +40,8 @@ class DataSetGenerator():
         self.timeRandom = max(5, floor(random.normalvariate(mu=30, sigma=15)))
 
         # Priority
-        possible_priority = [1, 2, 3, 4, 5]
-        self.priority = random.choices(possible_priority, weights=(10, 8, 6, 4, 2), k=1)
+        possible_priority = [1, 2, 3]
+        self.priority = random.choices(possible_priority, weights=(10, 8, 8), k=1)
 
         # Tools
         t = random.random()
@@ -70,25 +70,17 @@ class DataSetGenerator():
             self.generateConstraints()
             self.jobPermutations.append(self.generateDicts())
 
-        return self.jobPermutations
+        with open('output.csv', 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=['job', 'machine', 'time', 'priority', 'tool'])
+
+            writer.writeheader()
+
+            for jobRow in self.jobPermutations:
+                writer.writerow(jobRow)
 
     def validate(self):
         print(f"Generated {len(self.jobPermutations)} jobs")
-        print(f"Avg processing time: {sum(j['time'] for j in self.jobPermutations) / len(self.jobPermutations)}")      
+        print(f"processing time: {sum(j['time'] for j in self.jobPermutations) / len(self.jobPermutations)}")
 
-example = DataSetGenerator(10)
+########## Data Generator #################
 
-example.runDataSet()
-
-for x in example.jobPermutations:
-    print(x)
-
-example.validate()
-    
-with open('output.csv', 'w', newline='') as csvfile:
-    writer = csv.DictWriter(csvfile, fieldnames=['job', 'machine', 'time', 'priority', 'tool'])
-
-    writer.writeheader()
-
-    for jobRow in example.jobPermutations:
-        writer.writerow(jobRow)
