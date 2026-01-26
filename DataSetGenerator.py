@@ -93,5 +93,5 @@ class DataSetGenerator():
         print(f"Generated {len(self.jobPermutations)} jobs")
         print(f"processing time: {sum(j['time'] for j in self.jobPermutations) / len(self.jobPermutations)}")
 
-########## Data Generator #################
+
 
