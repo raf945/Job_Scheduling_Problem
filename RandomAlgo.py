@@ -1,30 +1,20 @@
-import csv
 import copy
+import random
 
-"""
-jobs = []
-
-# Read csv
-with open('output.csv', newline='') as csvfile:
-    reader = csv.DictReader(csvfile)
-    for row in reader:
-        row['time'] = int(row['time'])
-        row['priority'] = int(row['priority'])
-        jobs.append(row)
-"""
-
-class Greedy():
-    def __init__(self, dataset):
-        self.dataset = dataset
+class RandomAlgo():
+    def __init__(self, dataset, seed):
+        self.dataset = copy.deepcopy(dataset) 
+        self.seed = seed
         self.scheduledJobs =[]
         self.completionTime = 0
+        random.seed(seed)
+    
 
+    def shuffle(self):
+        random.shuffle(self.dataset)
+        self.dataset.sort(key=lambda x: (x["priority"]))
 
-    def rank(self):
-        # Sort by priority, then by time, then by machine
-        self.dataset.sort(key=lambda x: (x["priority"], x["time"], x["machine"]))
-
-
+    
     def scheduleJobs(self):
         
         # Reset Assignment
@@ -85,7 +75,9 @@ class Greedy():
     def getJobOrders(self):
         return self.scheduledJobs
     
+
     def run(self):
-        self.rank()
+        self.shuffle()
         self.scheduleJobs()
-                
+
+    

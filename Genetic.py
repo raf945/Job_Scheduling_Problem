@@ -48,7 +48,7 @@ class Genetic:
         # while loop so that the original job order is shuffled until 
         while x < self.pop_size-1:
             individual = copy.deepcopy(self.jobOrder)
-            #random.shuffle(individual)
+            random.shuffle(individual)
             #sortedIndividual = sorted(individual, key=lambda x: x['priority'])
             self.jobPermutations.append(individual)
 
@@ -126,7 +126,7 @@ class Genetic:
         self.firstGeneration.append((total_runtime, copy.deepcopy(sorted_jobs)))
 
         return self.scheduleJobs(index+1)
-        
+        """
     # Get best individuals
     def getParents(self):
 
@@ -138,6 +138,18 @@ class Genetic:
         # Assigned parent A and B to the best performers in the first generation
         self.parentA = (self.firstGeneration[0])
         self.parentB = (self.firstGeneration[1])
+        """
+
+    def getParents(self):
+        self.firstGeneration.sort(key=lambda y: y[0], reverse=False)
+        
+        # Tournament selection (pick 5 random, choose best of those 5)
+        tournament_size = 10
+        tournament_A = random.sample(self.firstGeneration, tournament_size)
+        self.parentA = min(tournament_A, key=lambda x: x[0])
+        
+        tournament_B = random.sample(self.firstGeneration, tournament_size)
+        self.parentB = min(tournament_B, key=lambda x: x[0])
 
     def printParents(self):
         print(f"parent A: {self.parentA}")

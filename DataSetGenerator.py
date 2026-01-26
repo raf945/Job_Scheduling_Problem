@@ -41,7 +41,7 @@ class DataSetGenerator():
 
         # Priority
         possible_priority = [1, 2, 3]
-        self.priority = random.choices(possible_priority, weights=(10, 8, 8), k=1)
+        self.priority = random.choices(possible_priority, weights=(10, 9, 9), k=1)
 
         # Tools
         t = random.random()
@@ -77,6 +77,17 @@ class DataSetGenerator():
 
             for jobRow in self.jobPermutations:
                 writer.writerow(jobRow)
+
+    def read(self, dataset):
+        # Read csv
+        with open('output.csv', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                row['time'] = int(row['time'])
+                row['priority'] = int(row['priority'])
+                dataset.append(row)
+
+            return dataset
 
     def validate(self):
         print(f"Generated {len(self.jobPermutations)} jobs")
