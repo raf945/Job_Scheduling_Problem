@@ -6,14 +6,14 @@ import csv
 import time
 
 # Random
-class Benchmark():
+class BenchmarkToy():
     def __init__(self):
         # store seeds and dataset size to loop through later
-        #self.seeds = [1, 2]
-        self.seeds = [1, 31, 76, 89, 102]
+        self.seeds = [1, 2]
+        #self.seeds = [1, 31, 76, 89, 102]
 
-        self.dataset_size = [10, 25, 50, 100, 200]
-        #self.dataset_size = [10]
+        #self.dataset_size = [10, 25, 50, 100, 200]
+        self.dataset_size = [10, 25]
 
         # Initialise list of results
         self.randomResults = []
@@ -99,7 +99,7 @@ class Benchmark():
                 for run in range(2):
                     # Start random algorithm
                     start_time = time.time()
-                    genetic_experiment = Genetic(jobs, 100, 50, 0.3, 0.7)
+                    genetic_experiment = Genetic(jobs, 25, 5, 0.3, 0.7)
                     genetic_experiment.run()
                     genetic_makespan.append(genetic_experiment.getCompletionTime())
                     genetic_runtime.append(time.time() - start_time)
@@ -202,11 +202,10 @@ class Benchmark():
         print('')
         self.getGreedyResults()
         print('')
-        print("Genetic ALgorithm Results")
+        print("Genetic Algorithm Results")
         print('')
         self.getGeneticResults()
         print('')
-        print('Improvements')
         print('')
         self.calculateImprovements()
         self.getImprovementResults()

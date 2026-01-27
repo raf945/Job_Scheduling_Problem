@@ -1,31 +1,27 @@
-from Genetic import Genetic
-from Greedy import Greedy
-from RandomAlgo import RandomAlgo
-from DataSetGenerator import DataSetGenerator as DSG
-import csv
+from Benchmark import Benchmark
+from BenchmarkToy import BenchmarkToy 
+from ComparisonPlot import ComparisonPlot
 
-jobs = []
+# This is the real benchmark with all problem sizes and seeds. Will take about 45-60 minutes
+"""
+runProgram = Benchmark()
+runProgram.runBenchmark()
 
-dataset = DSG(100, 1)
-dataset.runDataSet()
-dataset.read(jobs)
-# Create an instance of the GeneticAlgorithm class with jobs2 as our job order
-evolutionAlgo = Genetic(jobs, 100, 5, 0.7, 0.2)
-#evolutionAlgo.run()
+improvementGraph = ComparisonPlot()
+improvementGraph.improvementComparison()
+improvementGraph.makespanComparison()
+improvementGraph.runtimeComparison()
+"""
+# A benchmark with a toy dataset generator values to demonstrate that the code works
 
-# Create an instance of the greedy algorithm as baseline
-test = Greedy(jobs)
-#test.run()
+runProgram = BenchmarkToy()
+runProgram.runBenchmark()
 
-print('')
-#print(f'Greedy job order: {test.getJobOrders()}')
-print('')
-#print(f'Best Job order of Genetic Algorithm: {evolutionAlgo.mostOptimisedOrder()}')
+# Make sure to pip install matplotlib
+improvementGraph = ComparisonPlot()
+improvementGraph.improvementComparison()
+improvementGraph.makespanComparison()
+improvementGraph.runtimeComparison()
 
-experiment_3 = RandomAlgo(jobs, 5)
 
-experiment_3.run()
 
-#print(f'Greedy Baseline: {test.getCompletionTime()}')
-#print(f'Genetic Algorithm: {evolutionAlgo.getCompletionTime()}')
-print(experiment_3.getCompletionTime())

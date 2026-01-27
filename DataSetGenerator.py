@@ -5,7 +5,7 @@ from math import floor
 import random
 #import numpy as np
 
-random.seed(1)
+#random.seed(1)
 
 class DataSetGenerator():
 

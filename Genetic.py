@@ -14,8 +14,8 @@ class Genetic:
         self.mutation_rate = mutation_rate
         self.crossover_rate = crossover_rate
 
-        self.best_completion_time = float('inf')  # Not 0!
-        self.best_joborder = None  # Not 0!
+        self.best_completion_time = float('inf') 
+        self.best_joborder = None 
 
         # Initialise the job permutation list + firstGeneration
         self.jobPermutations = []
@@ -32,8 +32,8 @@ class Genetic:
 
         # Define the job contraints
         self.schedule = []
-        self.machines = {"M1": 0, "M2": 0, "M3": 0, "M4": 0, "M5": 0}  # available from time 0
-        self.operators = {"O1": 0, "O2": 0, "O3": 0}           		# available from time 0
+        self.machines = {"M1": 0, "M2": 0, "M3": 0, "M4": 0, "M5": 0} 
+        self.operators = {"O1": 0, "O2": 0, "O3": 0}           		
         self.tools = {"T1": 0, "T2": 0, 'T3': 0}
 
         # Function that copies jobs list and randomises them - Returns a list of lists that each have a randomised job order
@@ -42,17 +42,17 @@ class Genetic:
         # Here we are adding the original job order to the jobPermutations list
         x = 0
         originalJobOrder = copy.deepcopy(self.jobOrder)
-        #sortedOriginalJobOrder = sorted(originalJobOrder, key=lambda x: x['priority'])
+
         self.jobPermutations.append(originalJobOrder)
 
         # while loop so that the original job order is shuffled until 
         while x < self.pop_size-1:
             individual = copy.deepcopy(self.jobOrder)
             random.shuffle(individual)
-            #sortedIndividual = sorted(individual, key=lambda x: x['priority'])
+
             self.jobPermutations.append(individual)
 
-            #self.jobPermutations.append(sortedIndividual)
+
             x+=1
 
     # Getter function to get the original job permutations list
@@ -60,6 +60,7 @@ class Genetic:
         return f"size of the following list: {self.jobPermutations} is {len(self.jobPermutations)}"
 
     # Schedule the job order in job permutation in jobPermuations
+    # Schedule code refactored and expanded upon from LAB 3 by Dr Deniz Cetinkaya
     def scheduleJobs(self, index=0):
 
         if index == self.pop_size:
@@ -126,24 +127,12 @@ class Genetic:
         self.firstGeneration.append((total_runtime, copy.deepcopy(sorted_jobs)))
 
         return self.scheduleJobs(index+1)
-        """
-    # Get best individuals
-    def getParents(self):
-
-        # Sort all tuples in the list by the first element in the tuple which would be the runtime, therefore giving us the best performers
-        self.firstGeneration.sort(key=lambda y: y[0], reverse=False)
-
-        self.bestPerformer = self.firstGeneration[0][1]
-
-        # Assigned parent A and B to the best performers in the first generation
-        self.parentA = (self.firstGeneration[0])
-        self.parentB = (self.firstGeneration[1])
-        """
+    
 
     def getParents(self):
         self.firstGeneration.sort(key=lambda y: y[0], reverse=False)
         
-        # Tournament selection (pick 5 random, choose best of those 5)
+        # Tournament selection (pick 10 random, choose best of those 10)
         tournament_size = 10
         tournament_A = random.sample(self.firstGeneration, tournament_size)
         self.parentA = min(tournament_A, key=lambda x: x[0])
@@ -164,7 +153,7 @@ class Genetic:
         if x > self.crossover_rate:
             self.childA = copy.deepcopy(self.parentA[1])
             self.childB = copy.deepcopy(self.parentB[1])
-            #return 'Crossover not applied'
+
 
         # If x smaller than the crossover rate then we crossover the two parents
         # Here we assigned the parents' job order dicts from the two tuples
@@ -222,7 +211,7 @@ class Genetic:
                 x+=1
 
         print(f'This should be a fixed list: {uniqueValues}')
-        # Create a lookup: job name -> full dict
+
 
         job_lookup = {job['job']: job for job in self.jobOrder}
         
@@ -269,22 +258,16 @@ class Genetic:
         for i in range(len(self.nextGeneration)):
             self.nextGeneration[i] = self.twoRandomJobs(self.nextGeneration[i])
 
-        # Sort job orders by priority again
-        #for i in range(len(self.nextGeneration)):
-        #    self.nextGeneration[i] = sorted(self.nextGeneration[i], key=lambda x: x['priority'])
-
 
     def run(self):
         self.completion = []
-
         # Call the shuffle function to create a list of job lists each with a difference job order dictionary order
         self.shuffle()
-
         # Schedule machines and return list of tuples. Each tuple has a run time and its corresponding job order
         self.scheduleJobs()
 
         for e in range(self.epoch):
-            print(f'-----Generation {self.epoch}--------')
+            print(f'--Generation {self.epoch}--')
             # Get the best two performers
             self.getParents()
 

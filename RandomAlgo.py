@@ -9,12 +9,12 @@ class RandomAlgo():
         self.completionTime = 0
         random.seed(seed)
     
-
+    # Shuffle all jobs, then filter by priority
     def shuffle(self):
         random.shuffle(self.dataset)
         self.dataset.sort(key=lambda x: (x["priority"]))
 
-    
+    # Schedule code refactored and expanded upon from LAB 3 by Dr Deniz Cetinkaya
     def scheduleJobs(self):
         
         # Reset Assignment
@@ -67,15 +67,15 @@ class RandomAlgo():
 
         return self.scheduledJobs
     
-    
+    # Get completion time
     def getCompletionTime(self):
         return self.completionTime
     
-    
+    # Get job orders
     def getJobOrders(self):
         return self.scheduledJobs
     
-
+    # Run algorithm
     def run(self):
         self.shuffle()
         self.scheduleJobs()

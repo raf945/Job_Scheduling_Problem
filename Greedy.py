@@ -24,7 +24,7 @@ class Greedy():
         # Sort by priority, then by time, then by machine
         self.dataset.sort(key=lambda x: (x["priority"], x["time"], x["machine"]))
 
-
+    # Schedule code refactored and expanded upon from LAB 3 by Dr Deniz Cetinkaya
     def scheduleJobs(self):
         
         # Reset Assignment
